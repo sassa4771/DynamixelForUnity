@@ -3,7 +3,9 @@ DYNAMIXEL Communiation Protocol 2.0 can be used in Unity.
 
 # Set Up
 To use System.IO.Ports,
+
 Project Settings > Player > Other Settings > Api Compatibility Level
+
 to ".NET Framework".
 
 # Version
