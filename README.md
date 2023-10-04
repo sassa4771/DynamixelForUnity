@@ -6,5 +6,9 @@ Serial communication uses the paid asset "Serial Port Utility Pro".
 https://assetstore.unity.com/packages/tools/utilities/serial-port-utility-pro-125863
 *If the Serial communication function can be implemented without using this paid asset, Dynamixel can be run using the Dynamixel class.
 
+# Version
+Unity 2022.3.7f1
+Serial Port Utility Pro 2.83
+
 # Video
 https://youtube.com/shorts/VslaeaNzArg?feature=share
