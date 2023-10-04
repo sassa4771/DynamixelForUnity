@@ -1,39 +1,50 @@
-using System;
 using UnityEngine;
+using System.IO.Ports;
+using DynamixelForUnity;
+using UnityEditor.Experimental.GraphView;
+using UnityEditor.VersionControl;
+using System;
+using System.Collections;
 
 namespace DynamixelForUnity.Demo
 {
     public class SimpleDynamixelController : MonoBehaviour
     {
         [SerializeField] private byte id = 1;
-        [SerializeField, Range(0, 4095)]
-        private uint goal_angle = 1000;
+        [SerializeField, Range(0, 4095)] private uint goal_angle = 1000;
         [SerializeField] private bool torque_on = true;
         [SerializeField] private mode operating = mode.Position;
-
-        Dynamixel dynamixel = new Dynamixel(false);
-        SerialPortUtility.SerialPortUtilityPro port;
+        [SerializeField] private string portName = "COM4"; // 接続するシリアルポートの名前を指定
+        [SerializeField] private int baudRate = 57600; // ボーレートを指定
 
         public enum mode
         {
             Current,
             Velocity,
+            None,
             Position,
             ExtendedPosition,
             CurrentBasePosition,
             PWM
         }
 
-        private void Start()
+        Dynamixel dynamixel = new Dynamixel(false);
+        private SerialPort serialPort;
+
+        void Start()
         {
-            port = this.GetComponent<SerialPortUtility.SerialPortUtilityPro>();
+            //Project Settings > Player > Other Settings > Api Compatibility Levelを「.NET Framework」に変更
+            serialPort = new SerialPort(portName, baudRate);
+            serialPort.Open();
         }
 
         [ContextMenu("operating_mode")]
         public void operating_mode()
         {
             byte[] dataByte = dynamixel.OperatingMode(id, (byte)operating);
-            port.Write(dataByte);
+            serialPort.Write(dataByte, 0, dataByte.Length);
+
+            StartCoroutine("ReadData");
         }
 
         [ContextMenu("torque_enable")]
@@ -42,39 +53,50 @@ namespace DynamixelForUnity.Demo
             byte[] dataByte;
             if (torque_on) dataByte = dynamixel.TorqueEnable(id, 1);
             else dataByte = dynamixel.TorqueEnable(id, 0);
-            port.Write(dataByte);
+            serialPort.Write(dataByte, 0, dataByte.Length);
+
+            StartCoroutine("ReadData");
         }
 
         [ContextMenu("goal_position")]
         public void goal_position()
         {
             byte[] dataByte = dynamixel.GoalPosition(id, goal_angle);
-            port.Write(dataByte);
+            serialPort.Write(dataByte, 0, dataByte.Length);
+
+            StartCoroutine("ReadData");
         }
 
         [ContextMenu("present_position")]
         public void present_position()
         {
             byte[] dataByte = dynamixel.PresentPosition(id);
-            port.Write(dataByte);
+            serialPort.Write(dataByte, 0, dataByte.Length);
+
+            StartCoroutine("ReadData");
         }
 
-        /// <summary>
-        /// Dynamixelからのデータ読み取りメソッド
-        /// </summary>
-        /// <param name="data"></param>
-        public void ReadComprateList(object data)
+        IEnumerator ReadData()
         {
-            if (data is byte[])
-            {
-                byte[] byteData = (byte[])data;
-                //string dataText = "[";
-                //foreach (byte b in byteData) dataText += $"{b.ToString()}, ";
-                //dataText = dataText.Substring(0, dataText.Length - 2) + "]";
-                //Debug.Log("Read All Data: " + dataText);
+            yield return new WaitForSeconds(0.5f);
 
-                byte[] paramater = dynamixel.GetParameterFromPacket(byteData);
+            // バイトデータを読み取る例
+            if (serialPort.BytesToRead > 0)
+            {
+                byte[] buffer = new byte[serialPort.BytesToRead];
+                serialPort.Read(buffer, 0, buffer.Length);
+
+                //paramaterがある場合
+                byte[] paramater = dynamixel.GetParameterFromPacket(buffer);
                 if (paramater.Length > 0) Debug.Log($"Paramater: {BitConverter.ToUInt16(paramater, 0)}");
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (serialPort != null && serialPort.IsOpen)
+            {
+                serialPort.Close(); // アプリケーションが終了した際にシリアルポートを閉じる
             }
         }
     }
