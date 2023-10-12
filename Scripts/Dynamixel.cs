@@ -147,7 +147,7 @@ namespace DynamixelForUnity
             data[5] = (byte)((data.Count + 2 - 7) & 0xFF);
             data[6] = (byte)((data.Count + 2 - 7) >> 8);
 
-            ushort[] checksum = new ushort[data.Count - 2];
+            ushort[] checksum = new ushort[data.Count];
             Array.Copy(data.ToArray(), checksum, checksum.Length);
 
             ushort crc = CalculateCrc16(checksum);
@@ -207,7 +207,7 @@ namespace DynamixelForUnity
             data[5] = (byte)((data.Count + 2 - 7) & 0xFF);
             data[6] = (byte)((data.Count + 2 - 7) >> 8);
 
-            ushort[] checksum = new ushort[data.Count - 2];
+            ushort[] checksum = new ushort[data.Count];
             Array.Copy(data.ToArray(), checksum, checksum.Length);
 
             ushort crc = CalculateCrc16(checksum);
@@ -394,6 +394,7 @@ namespace DynamixelForUnity
         /// <summary>
         /// goal_velocity
         /// </summary>
+        /// </summary>
         /// <param name="id"></param>
         /// <param name="speed"></param>
         /// <returns></returns>
@@ -445,7 +446,7 @@ namespace DynamixelForUnity
             data[5] = (byte)((data.Count + 2 - 7) & 0xFF);
             data[6] = (byte)((data.Count + 2 - 7) >> 8);
 
-            ushort[] checksum = new ushort[data.Count - 2];
+            ushort[] checksum = new ushort[data.Count];
             Array.Copy(data.ToArray(), checksum, checksum.Length);
 
             ushort crc = CalculateCrc16(checksum);
@@ -509,7 +510,7 @@ namespace DynamixelForUnity
             data[5] = (byte)((data.Count + 2 - 7) & 0xFF);
             data[6] = (byte)((data.Count + 2 - 7) >> 8);
 
-            ushort[] checksum = new ushort[data.Count - 2];
+            ushort[] checksum = new ushort[data.Count];
             Array.Copy(data.ToArray(), checksum, checksum.Length);
 
             ushort crc = CalculateCrc16(checksum);
@@ -568,7 +569,7 @@ namespace DynamixelForUnity
             data[5] = (byte)((data.Length + 2 - 7) & 0xFF);
             data[6] = (byte)((data.Length + 2 - 7) >> 8);
 
-            ushort[] checksum = new ushort[data.Length - 2];
+            ushort[] checksum = new ushort[data.Length];
             Array.Copy(data, checksum, checksum.Length);
 
             ushort crc = CalculateCrc16(checksum);
@@ -637,7 +638,7 @@ namespace DynamixelForUnity
             data[5] = (byte)((data.Length + 2 - 7) & 0xFF);
             data[6] = (byte)((data.Length + 2 - 7) >> 8);
 
-            ushort[] checksum = new ushort[data.Length - 2];
+            ushort[] checksum = new ushort[data.Length];
             Array.Copy(data, checksum, checksum.Length);
 
             ushort crc = CalculateCrc16(checksum);
